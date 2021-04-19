@@ -1,0 +1,129 @@
+{ "frames": {
+   "Ships (Ships).aseprite": {
+    "frame": { "x": 0, "y": 0, "w": 256, "h": 256 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 256, "h": 256 },
+    "sourceSize": { "w": 256, "h": 256 },
+    "duration": 100
+   },
+   "Ships (Gun1).aseprite": {
+    "frame": { "x": 0, "y": 256, "w": 256, "h": 256 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 256, "h": 256 },
+    "sourceSize": { "w": 256, "h": 256 },
+    "duration": 100
+   },
+   "Ships (Icon1).aseprite": {
+    "frame": { "x": 0, "y": 512, "w": 256, "h": 256 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 256, "h": 256 },
+    "sourceSize": { "w": 256, "h": 256 },
+    "duration": 100
+   },
+   "Ships (Gun2).aseprite": {
+    "frame": { "x": 0, "y": 768, "w": 256, "h": 256 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 256, "h": 256 },
+    "sourceSize": { "w": 256, "h": 256 },
+    "duration": 100
+   },
+   "Ships (Icon2).aseprite": {
+    "frame": { "x": 0, "y": 1024, "w": 256, "h": 256 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 256, "h": 256 },
+    "sourceSize": { "w": 256, "h": 256 },
+    "duration": 100
+   },
+   "Ships (Gun3).aseprite": {
+    "frame": { "x": 0, "y": 1280, "w": 256, "h": 256 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 256, "h": 256 },
+    "sourceSize": { "w": 256, "h": 256 },
+    "duration": 100
+   },
+   "Ships (Icon3).aseprite": {
+    "frame": { "x": 0, "y": 1536, "w": 256, "h": 256 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 256, "h": 256 },
+    "sourceSize": { "w": 256, "h": 256 },
+    "duration": 100
+   },
+   "Ships (Gun4).aseprite": {
+    "frame": { "x": 0, "y": 1792, "w": 256, "h": 256 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 256, "h": 256 },
+    "sourceSize": { "w": 256, "h": 256 },
+    "duration": 100
+   },
+   "Ships (Icon4).aseprite": {
+    "frame": { "x": 0, "y": 2048, "w": 256, "h": 256 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 256, "h": 256 },
+    "sourceSize": { "w": 256, "h": 256 },
+    "duration": 100
+   },
+   "Ships (Gun5).aseprite": {
+    "frame": { "x": 0, "y": 2304, "w": 256, "h": 256 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 256, "h": 256 },
+    "sourceSize": { "w": 256, "h": 256 },
+    "duration": 100
+   },
+   "Ships (Icon5).aseprite": {
+    "frame": { "x": 0, "y": 2560, "w": 256, "h": 256 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 256, "h": 256 },
+    "sourceSize": { "w": 256, "h": 256 },
+    "duration": 100
+   }
+ },
+ "meta": {
+  "app": "http://www.aseprite.org/",
+  "version": "1.2.25-x64",
+  "image": "Ships.png",
+  "format": "RGBA8888",
+  "size": { "w": 256, "h": 2816 },
+  "scale": "1",
+  "frameTags": [
+  ],
+  "layers": [
+   { "name": "Ships", "opacity": 255, "blendMode": "normal" },
+   { "name": "Group 1" },
+   { "name": "Gun1", "group": "Group 1", "opacity": 255, "blendMode": "normal" },
+   { "name": "Icon1", "group": "Group 1", "opacity": 255, "blendMode": "normal" },
+   { "name": "Group 2" },
+   { "name": "Gun2", "group": "Group 2", "opacity": 255, "blendMode": "normal" },
+   { "name": "Icon2", "group": "Group 2", "opacity": 255, "blendMode": "normal" },
+   { "name": "Group 3" },
+   { "name": "Gun3", "group": "Group 3", "opacity": 255, "blendMode": "normal" },
+   { "name": "Icon3", "group": "Group 3", "opacity": 255, "blendMode": "normal" },
+   { "name": "Group 4" },
+   { "name": "Gun4", "group": "Group 4", "opacity": 255, "blendMode": "normal" },
+   { "name": "Icon4", "group": "Group 4", "opacity": 255, "blendMode": "normal" },
+   { "name": "Group 5" },
+   { "name": "Gun5", "group": "Group 5", "opacity": 255, "blendMode": "normal" },
+   { "name": "Icon5", "group": "Group 5", "opacity": 255, "blendMode": "normal" }
+  ],
+  "slices": [
+   { "name": "Host", "color": "#0000ffff", "data": "3,72,14:1,72,26:2,72,38", "keys": [{ "frame": 0, "bounds": {"x": 0, "y": 0, "w": 80, "h": 64 } }] },
+   { "name": "Asteriods", "color": "#0000ffff", "keys": [{ "frame": 0, "bounds": {"x": 0, "y": 64, "w": 80, "h": 64 } }] },
+   { "name": "Corvette", "color": "#0000ffff", "data": "4,72,148:3,72,158:1,72,172:2,72,189", "keys": [{ "frame": 0, "bounds": {"x": 0, "y": 128, "w": 80, "h": 64 } }] },
+   { "name": "Sloop", "color": "#0000ffff", "data": "2,72,217:1,72,238", "keys": [{ "frame": 0, "bounds": {"x": 0, "y": 192, "w": 80, "h": 64 } }] },
+   { "name": "Transport", "color": "#0000ffff", "data": "2,200,16:1,200,53", "keys": [{ "frame": 0, "bounds": {"x": 128, "y": 0, "w": 80, "h": 64 } }] },
+   { "name": "Yacht", "color": "#0000ffff", "data": "3,200,93:1,200,105:2,200,117", "keys": [{ "frame": 0, "bounds": {"x": 128, "y": 64, "w": 80, "h": 64 } }] },
+   { "name": "Cruiser", "color": "#0000ffff", "data": "3,200,140:5,200,152:4,200,164:2,200,176:1,200,188", "keys": [{ "frame": 0, "bounds": {"x": 128, "y": 128, "w": 80, "h": 64 } }] },
+   { "name": "Drone", "color": "#0000ffff", "data": "2,200,217:1,200,238", "keys": [{ "frame": 0, "bounds": {"x": 128, "y": 192, "w": 80, "h": 64 } }] }
+  ]
+ }
+}
