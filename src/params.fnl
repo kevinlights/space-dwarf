@@ -22,8 +22,11 @@
  :h2 330
  :keys {:left ["left" "a"]
         :right ["right" "d"]
-        :up ["up" "w" "space"]
-        :down ["down" "s"]}
+        :up ["up" "w"]
+        :down ["down" "s"]
+        :interact ["space" "return"]
+        :back ["escape"]
+        :destroy ["backspace" "delete"]}
  :player-speed {
                 :walk {:rate 10
                        :decay 20

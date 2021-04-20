@@ -8,11 +8,22 @@
 
 (fn game.draw [self]
   (love.graphics.push "all")
-  (love.graphics.scale 3)
+  (love.graphics.scale scale)
   (draw-background)
-  ;; (state.colliders:draw)
+
+  (local player state.objects.player)
   (each [key value (pairs state.objects)]
-    (value:draw))
+    (when (and (~= :player value.name) (>= (+ player.pos.y player.off.y player.size.h)
+                                          (+ value.pos.y (if value.off value.off.y 0) value.size.h)))
+      (value:draw))
+    )
+  (player:draw)
+  (each [key value (pairs state.objects)]
+    (when (and (~= :player value.name) (< (+ player.pos.y player.off.y player.size.h)
+                                          (+ value.pos.y (if value.off value.off.y 0) value.size.h)))
+      (value:draw))
+    )
+  ;; (state.colliders:draw :slot)
   (love.graphics.pop)
   )
 
@@ -25,9 +36,13 @@
   (local prefab-player (require :prefab-player))
   (tset state :colliders (prefab-colliders.create))
   (tset state :objects {})
-  (tset state :objects :player (prefab-player))
-  (state.colliders:add state.objects.player)
-  ((require :load-objects))
+  ;; (tset state :objects :player (prefab-player))
+  ;; (state.colliders:add state.objects.player)
+  (local load-objects (require :load-objects))
+  (load-objects)
   )
+
+(fn game.keypressed [self key]
+  (state.objects.player:keypressed key))
 
 game

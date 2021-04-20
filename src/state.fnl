@@ -1,1 +1,1 @@
-{:dev true}
+{:dev true :objects {} :slots {}}

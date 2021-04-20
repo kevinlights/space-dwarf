@@ -1,16 +1,24 @@
-(local aseprite (require :aseprite))
+(fn make-object [name ...]
+  ((require (.. :prefab- name)) ...))
 
-(local state (require :state))
-
-(local prefab-object (require :prefab-object))
+(fn instantiate-object [state name ...]
+  (tset state.objects name (make-object name ...)))
 
 (fn []
-  (let [atlas (aseprite "assets/data/Blocks.json" assets.sprites.Blocks)]
-    (tset state.objects :anvil (prefab-object atlas :AN 160 175))
-    (tset state.objects :mt1 (prefab-object atlas :mt1 32 160  ))
-    (tset state.objects :mt2 (prefab-object atlas :mt2 32 160))
-    (tset state.objects :FR1 (prefab-object atlas :FR1 90 136  ))
-    (tset state.objects :FU2 (prefab-object atlas :FU2 90 136))
-
-    )
-  )
+  (let [state (require :state)
+        aseprite (require :aseprite)
+        atlas (aseprite "assets/data/Blocks.json" assets.sprites.Blocks)
+        colliders (. (require :state) :colliders)
+        prefab-slot (require :prefab-slot)]
+    (instantiate-object state :player atlas 192 172 {: colliders : prefab-slot})
+    (instantiate-object state :anvil atlas 140 175 {: colliders : prefab-slot})
+    (instantiate-object state :materializer atlas 32 160 {: colliders : prefab-slot})
+    (instantiate-object state :furnace atlas 60 136 {: colliders : prefab-slot})
+    (instantiate-object state :table-shape atlas 64 198 {: colliders : prefab-slot})
+    (instantiate-object state :table-pre atlas 92 156 {: colliders : prefab-slot})
+    (instantiate-object state :etcher atlas 180 155 {: colliders : prefab-slot})
+    (instantiate-object state :quencher atlas 180 190 {: colliders : prefab-slot})
+    (instantiate-object state :table-work atlas 205 180 {: colliders : prefab-slot})
+    (instantiate-object state :table-export atlas 232 156 {: colliders : prefab-slot})
+    (instantiate-object state :table-hold atlas 232 198 {: colliders : prefab-slot})
+    ))

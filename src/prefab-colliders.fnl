@@ -2,15 +2,16 @@
 
 (local bump (require :lib.bump))
 
-(fn colliders.draw [self]
+(fn colliders.draw [self type]
   (local (items len) (self.world:getItems))
   (each [_ item (ipairs items)]
-    (if item.off
+    (when (or (not type) (= item.type type))
+        (if item.off
         (love.graphics.rectangle "line"
                                  (+ item.pos.x item.off.x)
                                  (+ item.pos.y item.off.y)
                                  item.size.w item.size.h)
-        (love.graphics.rectangle "line" item.pos.x item.pos.y item.size.w item.size.h))))
+        (love.graphics.rectangle "line" item.pos.x item.pos.y item.size.w item.size.h)))))
 
 (fn colliders.add [self {:pos {:x x :y y} :size {:w w :h h} :off off &as value}]
   (if off
@@ -30,10 +31,10 @@
                               :pos {:x 32 :y 208}
                               :size {:w 336 :h 8}}
                      :left   {:name :left :type :col
-                              :pos {:x 22 :y 150}
+                              :pos {:x 28 :y 150}
                               :size {:w 10 :h 66}}
                      :right  {:name :right :type :col
-                              :pos {:x 368 :y 150}
+                              :pos {:x 362 :y 150}
                               :size {:w 10 :h 66}}
                           })
   (setmetatable ret colliders-mt)
