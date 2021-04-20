@@ -1,13 +1,13 @@
 (local slot {})
 
-(fn slot.draw [self]
+(fn slot.draw [self x y]
   (match self.filled-with
     false nil
-    :CO (self.container:draw self.pos.x self.pos.y)
+    :CO (self.container:draw (or x self.pos.x) (or y self.pos.y))
     :FI (do
-          (love.graphics.circle :fill (+ self.pos.x 9) (+ self.pos.y 14) 4)
-          (self.container:draw self.pos.x self.pos.y))
-    _ (love.graphics.draw self.image self.quad self.pos.x self.pos.y))
+          (love.graphics.circle :fill (+ (or x self.pos.x) 9) (+ (or y self.pos.y) 14) 4)
+          (self.container:draw (or x self.pos.x) (or y self.pos.y)))
+    _ (love.graphics.draw self.image self.quad (or x self.pos.x) (or y self.pos.y)))
   )
 (local s2c {:HF1 :filled-form
       :HF2 :filled-form
@@ -198,6 +198,14 @@
   (tset self :category (if filled-with (slice-to-category filled-with) false))
   (tset self :filled-with filled-with)
   (tset self :quad (. self.atlas :quads "Blocks.aseprite" filled-with)))
+
+(fn slot.make [self build]
+  (let [prefab-container (require :prefab-container)
+        container (prefab-container self.atlas :ES1)]
+    (tset self :container (container:make build))
+    (tset self :filled-with :FI)
+    (tset self :category :finished)
+    ))
 
 (fn create [filled-with atlas parent index x y colliders]
   (local state (require :state))

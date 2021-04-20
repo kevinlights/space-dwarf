@@ -69,12 +69,25 @@
 
 (local container-mt {:__index container})
 
+(fn container.make [self build]
+  (assert (. builds build))
+  (let [order (. builds build)
+        filled-with (. order 1)
+        quad (. self.atlas :quads "Blocks.aseprite" filled-with)]
+    (tset self :quads [[quad 0 filled-with]])
+    (for [i 2 (# order)]
+      (let [filled-with (. order i)]
+        (self:add filled-with)))
+    (tset self :build build)
+    )
+  self
+  )
+
 (fn create [atlas filled-with]
   (assert (~= nil (slice-check filled-with)))
   (let [quad (. atlas :quads "Blocks.aseprite" filled-with)
         ret {:atlas atlas
-             :filled-with filled-with
-             :quads [[quad 0 filled-with :0]]
+             :quads [[quad 0 filled-with]]
              :build nil
              :image atlas.image}]
     (setmetatable ret container-mt)

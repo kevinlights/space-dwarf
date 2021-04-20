@@ -78,6 +78,6 @@ uploadlove: releases/$(NAME)-$(VERSION).love
 uploadweb: releases/$(NAME)-$(VERSION)-web.zip
 	butler push $^ $(ITCH_ACCOUNT)/$(NAME):web --userversion $(VERSION)
 
-upload: uploadlinux uploadwindows uploadmac uploadlove uploadweb
+upload: uploadlinux uploadwindows uploadlove uploadweb cleansrc
 
-release: linux windows mac web upload cleansrc
+release: linux windows web upload cleansrc
