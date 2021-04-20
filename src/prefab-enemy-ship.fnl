@@ -3,19 +3,32 @@
 (local shared (require :ship))
 
 (fn enemy-ship.draw [self]
-  (love.graphics.draw self.image self.quads.ship self.pos.x self.pos.y)
-  (let [slots self.table.slots]
-    (each [i index (ipairs self.active-index)]
-      (let [slot (. slots index)]
-        (slot:draw 20 20))))
-  )
+  (shared.ship-draw self))
 
 (fn enemy-ship.update [self dt]
   (shared.ship-update-weapons self self.active-index))
 
 (local enemy-ship-mt {:__index enemy-ship})
 
-(fn create [atlas x y {: colliders : table}]
+(fn enemy-ship.set [self name]
+  (let [(quads hardpoints count)
+        (shared.ship-get-quads self.atlas self.pos.x self.pos.y name self.colliders self.table)
+        data (. shared :data name)
+        ret {:size {:w data.w :h data.h}
+             :off {:x data.x :y data.y}
+             : quads
+             : hardpoints
+             : count
+             :active-index []
+             }
+        ]
+    (each [key value (pairs ret)]
+      (tset self key value))
+    (self.colliders:update self)
+    ret
+  ))
+
+(fn create [atlas x y {: colliders : table : name}]
   (let [slots (. table :slots)
         slot-1 (. slots 1)
         slot-2 (. slots 2)
@@ -29,15 +42,18 @@
     (slot-5:make :mass-ordinance)
     )
   (let [(quads hardpoints count)
-        (shared.ship-get-quads atlas "Yacht")
+        (shared.ship-get-quads atlas x y "Drone" colliders table)
+        data (. shared :data "Drone")
         ret {:pos {: x : y}
-             :size {:w 64 :h 64}
+             :size {:w data.w :h data.h}
+             :off {:x data.x :y data.y}
              :type :click
              : quads
              : hardpoints
              : count
              : table
-             :active-index []
+             : colliders
+             : atlas
              :image atlas.image
              }
         ]

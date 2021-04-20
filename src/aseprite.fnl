@@ -16,9 +16,7 @@
       (tset atlas.quads frame-name {})
       (local frame-bounds (. frame-value :frame))
       (each [_ slice-value (pairs slice-data)]
-        (pp slice-value)
         (local slice-bounds (. slice-value :keys 1 :bounds))
-        (pp slice-bounds)
         (local quad (love.graphics.newQuad
                      (+ slice-bounds.x frame-bounds.x)
                      (+ slice-bounds.y frame-bounds.y)

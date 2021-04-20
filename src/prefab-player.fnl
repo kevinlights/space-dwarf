@@ -122,9 +122,7 @@
 
 (fn slot-interact-callback [player]
   (tset player :closest-slot (closest-slot player))
-  (slot-interact player)
-  (pp "slot-interact")
-  )
+  (slot-interact player))
 
 (fn delete-slot-callback [player])
 

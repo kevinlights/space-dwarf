@@ -23,7 +23,7 @@
                                           (+ value.pos.y (if value.off value.off.y 0) value.size.h)))
       (value:draw))
     )
-  ;; (state.colliders:draw :slot)
+  (state.colliders:draw :click)
   (love.graphics.pop)
   )
 

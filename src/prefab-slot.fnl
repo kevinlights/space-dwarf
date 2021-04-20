@@ -1,11 +1,12 @@
 (local slot {})
 
-(fn slot.draw [self x y]
+(fn slot.draw [self x y clean?]
   (match self.filled-with
     false nil
     :CO (self.container:draw (or x self.pos.x) (or y self.pos.y))
     :FI (do
-          (love.graphics.circle :fill (+ (or x self.pos.x) 9) (+ (or y self.pos.y) 14) 4)
+          (when (not clean?)
+            (love.graphics.circle :fill (+ (or x self.pos.x) 9) (+ (or y self.pos.y) 14) 4))
           (self.container:draw (or x self.pos.x) (or y self.pos.y)))
     _ (love.graphics.draw self.image self.quad (or x self.pos.x) (or y self.pos.y)))
   )
@@ -118,10 +119,9 @@
   )
 
 (fn slot.try-mix [self target]
-  (pp [self.category self.parent target.category])
+  (pp ["interact" self.category self.parent target.category])
   (match [self.category self.parent target.category]
     [:form :anvil :hot-matter] (do
-                                 (pp ["fill form" (to-filled self.category self.filled-with)])
                                  (self:set (to-filled self.category self.filled-with))
                                  (set self.temperature target.temperature)
                                  (erase-values target))
@@ -132,32 +132,27 @@
                                   (set self.temperature 0))
     (where [a _ b] (or (= a :etched-shape) (= a :tempered-shape))
            (or (= b :etched-shape) (= b :tempered-shape) (= b :logical-unit) (= b :explosive)))
-    (do (pp "Going to stack!")
-        (local prefab-container (require :prefab-container))
-        (tset self :container (prefab-container self.atlas self.filled-with))
-        (set self.filled-with :CO)
-        (set self.category :container)
-        (let [(success build) (self.container:add target.filled-with)]
-          (when success
-            (erase-values target))
-          (when build
-            (set self.build build)
-            (set self.filled-with :FI)
-            (set self.category :finished)
-            )
-          )
-        )
+    (do
+      (local prefab-container (require :prefab-container))
+      (tset self :container (prefab-container self.atlas self.filled-with))
+      (set self.filled-with :CO)
+      (set self.category :container)
+      (let [(success build) (self.container:add target.filled-with)]
+        (when success
+          (erase-values target))
+        (when build
+          (set self.build build)
+          (set self.filled-with :FI)
+          (set self.category :finished))))
     (where [:container _ b]  (or (= b :etched-shape) (= b :tempered-shape) (= b :logical-unit) (= b :explosive)))
-    (do (pp "Going to stack!")
-        (let [(success build) (self.container:add target.filled-with)]
-          (when success
-            (erase-values target))
-          (when build
-            (set self.build build)
+    (do
+      (let [(success build) (self.container:add target.filled-with)]
+        (when success
+          (erase-values target))
+        (when build
+          (set self.build build)
             (set self.filled-with :FI)
-            (set self.category :finished)
-            )
-          ))
+            (set self.category :finished))))
     [false _ _] (do (transfer-values target self)
                     (erase-values target))
     [_ _ false] (self:pickup target)

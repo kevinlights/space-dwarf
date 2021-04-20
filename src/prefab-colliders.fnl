@@ -18,6 +18,17 @@
       (self.world:add value (+ x off.x) (+ y off.y)  w h)
       (self.world:add value x y w h)))
 
+(fn colliders.remove [self value]
+  (when (self.world:hasItem value)
+    (self.world:remove value)))
+
+(fn colliders.update [self {:pos {:x x :y y} :size {:w w :h h} :off off &as value}]
+  (when (self.world:hasItem value)
+      (if off
+          (self.world:update value (+ x off.x) (+ y off.y)  w h)
+          (self.world:update value x y w h))))
+;; world:update(item, x,y,<w>,<h>)
+
 (local colliders-mt {:__index colliders})
 
 (fn create []

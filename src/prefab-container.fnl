@@ -47,7 +47,6 @@
 (fn get-y-offset [quads filled-with]
   (var offset 0)
   (each [_ [_ off slice ] (ipairs quads)]
-    (pp [slice off (. y-offsets :2) [(slice-breakout slice)]])
     (let [(_ parent-slice-number) (slice-breakout slice)
           (_ slice-number) (slice-breakout filled-with)
           new-off (+ off (. y-offsets parent-slice-number slice-number))]
@@ -64,7 +63,6 @@
           ]
       (table.insert self.quads [quad y-offset filled-with])
       (set self.build (check-build self.quads)))
-    (pp self)
       (values true self.build)))
 
 (local container-mt {:__index container})
