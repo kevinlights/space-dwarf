@@ -1,8 +1,13 @@
 (local slot {})
 
 (fn slot.draw [self]
-  (when self.filled-with
-    (love.graphics.draw self.image self.quad self.pos.x self.pos.y))
+  (match self.filled-with
+    false nil
+    :CO (self.container:draw self.pos.x self.pos.y)
+    :FI (do
+          (love.graphics.circle :fill (+ self.pos.x 9) (+ self.pos.y 14) 4)
+          (self.container:draw self.pos.x self.pos.y))
+    _ (love.graphics.draw self.image self.quad self.pos.x self.pos.y))
   )
 (local s2c {:HF1 :filled-form
       :HF2 :filled-form
@@ -33,15 +38,16 @@
       :EX :explosive
       :MA :matter
       :HM :hot-matter
-      :LA :laser
-      :PD :point-defense
-      :ML :missile-launcher
-      :CP :capacitor
-      :MO :mass-ordinance
-      :MS :missile
-      :SH :shield
-      :CA :ceramic-armour
-      :WI :work-in-progress
+      ;; :LA :laser
+      ;; :PD :point-defense
+      ;; :ML :missile-launcher
+      ;; :CP :capacitor
+      ;; :MO :mass-ordinance
+      ;; :MS :missile
+      ;; :SH :shield
+      ;; :CA :ceramic-armour
+      :FI :finished
+      :CO :container
             })
 
 (local c2s (lume.invert s2c))
@@ -95,13 +101,15 @@
   (tset slot-b :category slot-a.category)
   (tset slot-b :filled-with slot-a.filled-with)
   (tset slot-b :quad slot-a.quad)
-  (tset slot-b :temperature slot-a.temperature))
+  (tset slot-b :temperature slot-a.temperature)
+  (tset slot-b :container slot-a.container))
 
 (fn erase-values [slot]
   (tset slot :category false)
   (tset slot :filled-with false)
   (tset slot :quad nil)
   (tset slot :temperature 0)
+  (tset slot :container false)
   )
 
 (fn slot.pickup [self target]
@@ -122,11 +130,37 @@
                                   (set target.temperature self.temperature)
                                   (self:set (to-empty self.category self.filled-with))
                                   (set self.temperature 0))
+    (where [a _ b] (or (= a :etched-shape) (= a :tempered-shape))
+           (or (= b :etched-shape) (= b :tempered-shape) (= b :logical-unit) (= b :explosive)))
+    (do (pp "Going to stack!")
+        (local prefab-container (require :prefab-container))
+        (tset self :container (prefab-container self.atlas self.filled-with))
+        (set self.filled-with :CO)
+        (set self.category :container)
+        (let [(success build) (self.container:add target.filled-with)]
+          (when success
+            (erase-values target))
+          (when build
+            (set self.build build)
+            (set self.filled-with :FI)
+            (set self.category :finished)
+            )
+          )
+        )
+    (where [:container _ b]  (or (= b :etched-shape) (= b :tempered-shape) (= b :logical-unit) (= b :explosive)))
+    (do (pp "Going to stack!")
+        (let [(success build) (self.container:add target.filled-with)]
+          (when success
+            (erase-values target))
+          (when build
+            (set self.build build)
+            (set self.filled-with :FI)
+            (set self.category :finished)
+            )
+          ))
     [false _ _] (do (transfer-values target self)
                     (erase-values target))
     [_ _ false] (self:pickup target)
-
-
     )
   )
 
@@ -173,6 +207,7 @@
              :size {:w 8 :h 8}
              :off {:x 4 :y 8}
              :parent parent
+             :container false
              :index index
              :type :slot
              :temperature 0

@@ -11,9 +11,9 @@
 
 (fn create [atlas x y {: colliders : prefab-slot}]
   (let [quad (. atlas :quads "Blocks.aseprite" :table-blue-3)
-        slot1 (prefab-slot false atlas :table-pre 1 (+ x 4) (- y 13) colliders)
-        slot2 (prefab-slot false atlas :table-pre 2 (+ x 16) (- y 13) colliders)
-        slot3 (prefab-slot false atlas :table-pre 3 (+ x 28) (- y 13) colliders)
+        slot1 (prefab-slot :EX atlas :table-pre 1 (+ x 4) (- y 13) colliders)
+        slot2 (prefab-slot :TS1 atlas :table-pre 2 (+ x 16) (- y 13) colliders)
+        slot3 (prefab-slot :TS3 atlas :table-pre 3 (+ x 28) (- y 13) colliders)
         ret {:name :table-pre
              :pos {: x : y}
              :size {:w 40 :h 8}
