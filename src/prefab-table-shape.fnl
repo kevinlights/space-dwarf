@@ -23,7 +23,12 @@
              : quad
              :slots [slot1 slot2 slot3 slot4 slot5]
              :type :col
+             :h 12
+             :w 66
+             : colliders
              :image atlas.image}]
     (setmetatable ret table-shape-mt)
+    (tset ret :clickable ((require :prefab-clickable) nil (- x 1) (- y 3) ret))
+    (ret.clickable:activate "table-shape")
     (colliders:add ret)
     ret))

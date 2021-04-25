@@ -47,7 +47,12 @@
              :transform-timer 0
              :type :col
              :slots [slot1]
+             :h 10
+             :w 10
+             : colliders
              :image atlas.image}]
     (setmetatable ret quencher-mt)
+    (tset ret :clickable ((require :prefab-clickable) nil (- x 1) (- y 3) ret))
+    (ret.clickable:activate "quencher")
     (colliders:add ret)
     ret))

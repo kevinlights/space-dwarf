@@ -1,8 +1,8 @@
 (local table-enemy {})
 
 (fn table-enemy.draw [self]
-  (love.graphics.draw self.image self.quad self.pos.x self.pos.y)
-  (each [_ slot (ipairs self.slots)] (slot:draw))
+  ;;(love.graphics.draw self.image self.quad self.pos.x self.pos.y)
+  ;; (each [_ slot (ipairs self.slots)] (slot:draw nil nil true))
   )
 
 (fn table-enemy.update [self dt]

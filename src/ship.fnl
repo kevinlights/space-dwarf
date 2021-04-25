@@ -1,6 +1,6 @@
 (local data
        {:Host {:w 48 :h 32 :x 8 :y 0}
-        :Asteriods {:w 48 :h 44 :x 8 :y 4}
+        :Asteroids {:w 48 :h 44 :x 8 :y 4}
         :Corvette {:w 48 :h 48 :x 8 :y 8}
         :Sloop {:w 32 :h 32 :x 16 :y 16}
         :Transport {:w 48 :h 48 :x 10 :y 6}
@@ -22,6 +22,19 @@
       ;;              true))
         (hardpoint:draw))
       ))
+  )
+(fn ship-draw-outline [ship w h]
+  (let [{: x : y} ship.pos]
+    (love.graphics.line x y (+ x 2) y)
+    (love.graphics.line x y (+ x 0) (+ y 2))
+    (love.graphics.line (+ x 0) (+ y h) (+ x 2) (+ y h))
+    (love.graphics.line (+ x 0) (+ y h) (+ x) (+ y h -2))
+
+    (love.graphics.line (+ x w) y (+ x -2 w) y)
+    (love.graphics.line (+ w x) y (+ x w) (+ y 2))
+    (love.graphics.line (+ x w) (+ y h) (+ x w -2) (+ y h))
+    (love.graphics.line (+ x w) (+ y h) (+ x w) (+ y h -2))
+    )
   )
 
 (fn ship-get-quads [atlas x y slice colliders]
@@ -51,7 +64,7 @@
   (let [count ship.count
         slots ship.table.slots
         options (lume.invert [:laser :point-defense :ceramic-armour :missile-launcher
-                              :sheild])]
+                              :shield])]
     ;; (set active [])
     ;; (lume.clear active)
     (for [i 1 count]
@@ -61,7 +74,9 @@
     (each [_ slot (ipairs slots)]
       (when (and (= :finished slot.category) (. options slot.container.build) (<= i count))
         (let [hardpoint (. ship.hardpoints i)]
-          (hardpoint:set-index slot))
+          (hardpoint:set-index slot)
+          (hardpoint.clickable:activate (slot.container:name))
+          (hardpoint.clickable:update 0))
         (set i (+ i 1))
         )
       )
@@ -69,4 +84,4 @@
 
 
 
-{: ship-get-quads : ship-update-weapons : ship-draw : data}
+{: ship-get-quads : ship-update-weapons : ship-draw : data : ship-draw-outline}

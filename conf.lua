@@ -11,8 +11,8 @@ love.conf = function(t)
    t.version = "11.3"
    t.window.fullscreentype = "desktop"-- "desktop" -- "exclusive"
    t.window.fullscreen = false
-   t.window.minwidth = (400 * scale)
-   t.window.minheight = (220 * scale)
+   -- t.window.minwidth = (400 * scale)
+   -- t.window.minheight = (220 * scale)
    t.window.resizable = false
    t.window.centered = true
 

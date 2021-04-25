@@ -12,25 +12,30 @@
 (fn hardpoint.set-index [self slot]
   (tset self :slot slot)
   (if slot
-      (tset self :type :click)
-      (tset self :type :inactive)))
+      (self.clickable:activate slot.filled-with)
+      (self.clickable:deactivate)))
 
 (fn hardpoint.delete [self]
-  (self.colliders:remove self))
+  (self.clickable:remove self))
 
 (local hardpoint-mt {:__index hardpoint})
 
 (fn create [atlas x y {: colliders : dx : dy}]
-  (let [
+  (let [prefab-clickable (require :prefab-clickable)
         ret {:pos {: x : y}
              : dx
              : dy
              :size {:w 10 :h 10}
              :off {:x (- (+ dx 5)) :y (- (+ dy 8))}
              :slot false
-             : colliders
-             :type :click}]
+             ;;: colliders
+             :clickable (prefab-clickable nil x y {:w 10 :h 10
+                                                   :ox (- (+ dx 5)) :oy (- (+ dy 8))
+                                                   :type :inactive
+                                                   : colliders
+                                                   :element false})
+             }]
     (setmetatable ret hardpoint-mt)
-    (colliders:add ret)
+    ;; (colliders:add ret)
     ret
   ))

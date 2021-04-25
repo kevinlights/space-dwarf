@@ -9,15 +9,6 @@
 
 (local object-mt {:__index object})
 
-(local properties {:AN {:size {:w 20 :h 8}
-                        :off  {:x 4 :y 8}}
-                   :mt1 {:size {:w 16 :h 12}
-                         :off  {:x 0 :y 20}}
-                   :FR1 {:size {:w 32 :h 32}
-                         }
-                   }
-       )
-
 (fn create [atlas slice x y]
   (let [quad (. atlas :quads "Blocks.aseprite" slice)
 

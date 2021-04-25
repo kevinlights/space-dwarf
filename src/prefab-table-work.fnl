@@ -19,7 +19,12 @@
              : quad
              :slots [slot1]
              :type :col
+             :h 12
+             :w 10
+             : colliders
              :image atlas.image}]
     (setmetatable ret table-work-mt)
+    (tset ret :clickable ((require :prefab-clickable) nil (- x 1) (- y 3) ret))
+    (ret.clickable:activate "table-work")
     (colliders:add ret)
     ret))

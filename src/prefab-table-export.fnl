@@ -27,8 +27,13 @@
              :off  {:x 0 :y 0}
              : quad
              :slots [slot1 slot2 slot3 slot4 slot5 slot6 slot7 slot8 slot9]
+             :h 12
+             :w 114
+             : colliders
              :type :col
              :image atlas.image}]
     (setmetatable ret table-export-mt)
+    (tset ret :clickable ((require :prefab-clickable) nil (- x 1) (- y 3) ret))
+    (ret.clickable:activate "table-export")
     (colliders:add ret)
     ret))

@@ -1,25 +1,31 @@
-{ "frames": {
-   "Background.aseprite": {
+{ "frames": [
+   {
+    "filename": "/home/alexjgriffith/Documents/spring-lisp-game-jam-2021/Background.aseprite",
     "frame": { "x": 0, "y": 0, "w": 400, "h": 220 },
     "rotated": false,
     "trimmed": false,
     "spriteSourceSize": { "x": 0, "y": 0, "w": 400, "h": 220 },
     "sourceSize": { "w": 400, "h": 220 },
     "duration": 100
+   },
+   {
+    "filename": "/home/alexjgriffith/Documents/spring-lisp-game-jam-2021/Background.aseprite",
+    "frame": { "x": 0, "y": 220, "w": 400, "h": 220 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 400, "h": 220 },
+    "sourceSize": { "w": 400, "h": 220 },
+    "duration": 100
    }
- },
+ ],
  "meta": {
   "app": "http://www.aseprite.org/",
   "version": "1.2.25-x64",
   "image": "Background.png",
   "format": "RGBA8888",
-  "size": { "w": 400, "h": 220 },
+  "size": { "w": 400, "h": 440 },
   "scale": "1",
   "frameTags": [
-  ],
-  "layers": [
-   { "name": "Layer 1", "opacity": 255, "blendMode": "normal" },
-   { "name": "Box", "opacity": 255, "blendMode": "normal" }
   ],
   "slices": [
   ]

@@ -94,7 +94,11 @@
   (set-animation-state player)
   (animation:update dt)
   ;; Move slot
-  (let [slot (. player.slots 1)]
+  (let [slot (. player.slots 1)
+        clickable player.clickable]
+    ;;(- x 2) (- y 10)
+    (clickable:update dt {:pos {:x (- player.pos.x 2)
+                                :y (- player.pos.y 10)}})
     (slot:update dt {:pos player.pos :offset {:x 0 :y -10}}))
 
   (tset player :closest-slot (closest-slot player))
@@ -128,16 +132,18 @@
 
 (fn player.keypressed [player key]
   (match key
-    :space (slot-interact-callback player)
-    :return (slot-interact-callback player)
-    :backspace (delete-slot-callback player)
-    :delete (delete-slot-callback player)))
+    :space (do (slot-interact-callback player) nil)
+    :return (do (slot-interact-callback player) nil)
+    :backspace (do (delete-slot-callback player) nil)
+    :delete (do (delete-slot-callback player) nil)
+    _ key)
+  )
 
 (local player-mt {:__index player})
 
 (fn create [atlas x y  {: colliders : prefab-slot}]
   (local params (require :params))
-  (local slot1 (prefab-slot :MA atlas :player 1 (+ x 3) (+ y 8) colliders))
+  (local slot1 (prefab-slot false atlas :player 1 (+ x 3) (+ y 8) colliders))
   (local ret {:pos {:x (or x 192) :y (or y 172)}
               :size {:w 4 :h 4}
               :off {:x 6 :y 12}
@@ -150,10 +156,15 @@
               :moving false
               :holding false
               :closest-slot false
+              : colliders
+              :w 8
+              :h 14
               }
          )
   (tset ret.speed :x 0)
   (tset ret.speed :y 0)
   (load-animations ret)
   (setmetatable ret player-mt)
+  (tset ret :clickable ((require :prefab-clickable) nil (- x 2) (- y 10) ret))
+  (ret.clickable:activate "Dwarf")
   (colliders:add ret))

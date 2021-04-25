@@ -38,7 +38,7 @@
                  (love.audio.newSource "assets/music/SadSpace.ogg" "static")
                  (. _G.assets.music "SadSpace")))
   (bgm:setLooping true)
-  (bgm:setVolume 0.25)
+  (bgm:setVolume 0)
   (bgm:play)
 
   (require :globals)

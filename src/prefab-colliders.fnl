@@ -29,6 +29,29 @@
           (self.world:update value x y w h))))
 ;; world:update(item, x,y,<w>,<h>)
 
+(fn filter-type [type]
+  (fn [item]
+    (= type item.type)))
+
+(fn colliders.check-point [self x y type]
+  (local (items len)  (self.world:queryPoint (/ x scale) (/ y scale) (filter-type type)))
+  (when (> len 0)
+    (var item (. items 1))
+    (var max-order (. item :order))
+    (for [i 2 len]
+      (when (> (. items i :order) max-order)
+        (set max-order (. items i :order))
+        (set item (. items i))))
+    (love.event.push :click item.element)
+    (item:action x y)))
+
+(fn colliders.check-hover [self x y map]
+  (local (items len)  (self.world:queryPoint (/ x scale) (/ y scale) (filter-type :click)))
+  (when (> len 0)
+    (local item (. items 1))
+    (love.event.push :hover item.element (lume.invert (lume.keys map)))
+    (item:hover x y map)))
+
 (local colliders-mt {:__index colliders})
 
 (fn create []

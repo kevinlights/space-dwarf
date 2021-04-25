@@ -46,7 +46,12 @@
              :transform-timer 0
              :slots [slot1]
              :type :col
+             :h 10
+             :w 10
+             : colliders
              :image atlas.image}]
     (setmetatable ret etcher-mt)
+    (tset ret :clickable ((require :prefab-clickable) nil (- x 1) (- y 3) ret))
+    (ret.clickable:activate "etcher")
     (colliders:add ret)
     ret))

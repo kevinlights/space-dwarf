@@ -31,7 +31,7 @@
                :missile-launcher [:ES2 :LU :TS5 :TS2]
                :point-defense [:ES2 :LU :TS5 :TS3]
                :laser [:TS3 :LU :ES5 :ES1]
-               :sheild [:TS2 :LU :TS5]
+               :shield [:TS2 :LU :TS5]
                :missile [:TS3 :EX :TS1]
                :mass-ordinance [:TS4 :TS4]})
 
@@ -54,6 +54,12 @@
         (set offset new-off)
         )))
   offset)
+
+
+(fn container.name [self]
+  (if self.build
+      self.build
+      (lume.map self.quads (fn [x] (. x 3)))))
 
 (fn container.add [self filled-with]
   (assert (~= nil (slice-check filled-with)))

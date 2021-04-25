@@ -99,6 +99,7 @@
 (local slot-mt {:__index slot})
 
 (fn transfer-values [slot-a slot-b]
+  (slot-a.clickable:transfer slot-b.clickable)
   (tset slot-b :category slot-a.category)
   (tset slot-b :filled-with slot-a.filled-with)
   (tset slot-b :quad slot-a.quad)
@@ -111,6 +112,7 @@
   (tset slot :quad nil)
   (tset slot :temperature 0)
   (tset slot :container false)
+  (slot.clickable:erase)
   )
 
 (fn slot.pickup [self target]
@@ -124,12 +126,15 @@
     [:form :anvil :hot-matter] (do
                                  (self:set (to-filled self.category self.filled-with))
                                  (set self.temperature target.temperature)
-                                 (erase-values target))
+                                 (erase-values target)
+                                 (love.event.push :fill-form self.filled-with self.category))
     [:filled-form :anvil false] (do
                                   (target:set (to-heated-shape self.category self.filled-with))
                                   (set target.temperature self.temperature)
                                   (self:set (to-empty self.category self.filled-with))
-                                  (set self.temperature 0))
+                                  (set self.temperature 0)
+                                  (love.event.push :pickup target.filled-with target.category)
+                                  )
     (where [a _ b] (or (= a :etched-shape) (= a :tempered-shape))
            (or (= b :etched-shape) (= b :tempered-shape) (= b :logical-unit) (= b :explosive)))
     (do
@@ -143,7 +148,13 @@
         (when build
           (set self.build build)
           (set self.filled-with :FI)
-          (set self.category :finished))))
+          (tset self :wear 10)
+          (set self.category :finished))
+        (love.event.push :combine self.filled-with
+                         (when (and self.container self.container.quads)
+                           (lume.map self.container.quads
+                                     (fn [x] (. x 3)))) build))
+      )
     (where [:container _ b]  (or (= b :etched-shape) (= b :tempered-shape) (= b :logical-unit) (= b :explosive)))
     (do
       (let [(success build) (self.container:add target.filled-with)]
@@ -151,11 +162,22 @@
           (erase-values target))
         (when build
           (set self.build build)
-            (set self.filled-with :FI)
-            (set self.category :finished))))
-    [false _ _] (do (transfer-values target self)
-                    (erase-values target))
-    [_ _ false] (self:pickup target)
+          (set self.filled-with :FI)
+          (tset self :wear 10)
+          (set self.category :finished))
+        (love.event.push :combine self.filled-with
+                         (when (and self.container self.container.quads)
+                           (lume.map self.container.quads
+                                     (fn [x] (. x 3))))
+                         build))
+      )
+    [false _ _] (do
+                  (transfer-values target self)
+                  (erase-values target)
+                  (love.event.push :putdown self.filled-with self.category))
+    [_ _ false] (do
+                  (self:pickup target)
+                  (love.event.push :pickup target.filled-with target.category))
     )
   )
 
@@ -171,7 +193,15 @@
   (let [{: pos : offset : rate} (or args {})]
     (when (and args pos offset)
       (tset self.pos :x (+ pos.x offset.x))
-      (tset self.pos :y (+ pos.y offset.y)))
+      (tset self.pos :y (+ pos.y offset.y))
+      (self.clickable:update dt self)
+      )
+    (when self.filled-with
+      (self.clickable:activate self.filled-with))
+    (when self.container
+      (self.clickable:activate (self.container:name))
+      )
+
     (self:heat dt (or rate -30)))
   )
 
@@ -192,7 +222,10 @@
 (fn slot.set [self filled-with]
   (tset self :category (if filled-with (slice-to-category filled-with) false))
   (tset self :filled-with filled-with)
-  (tset self :quad (. self.atlas :quads "Blocks.aseprite" filled-with)))
+  (tset self :quad (. self.atlas :quads "Blocks.aseprite" filled-with))
+  (self.clickable:activate filled-with)
+  ;; (self.clickable:activate filled-with)
+  )
 
 (fn slot.make [self build]
   (let [prefab-container (require :prefab-container)
@@ -200,7 +233,12 @@
     (tset self :container (container:make build))
     (tset self :filled-with :FI)
     (tset self :category :finished)
+    (self.clickable:activate build)
     ))
+
+(fn slot.erase [self]
+  (self.clickable:remove)
+  (erase-values self))
 
 (fn create [filled-with atlas parent index x y colliders]
   (local state (require :state))
@@ -217,8 +255,17 @@
              :category (if filled-with (slice-to-category filled-with) false)
              :filled-with filled-with
              :quad quad
+             :wear false
+             : colliders
+             :order 1
              :image atlas.image}]
-    (setmetatable ret slot-mt)
     (table.insert state.slots ret)
+    (tset ret :clickable ((require :prefab-clickable) nil (+ x 0) (+ y 0) ret))
+    ;; need to be deactivated by default
+    ;; only activate when filled
+    (ret.clickable:deactivate)
+    (when filled-with
+      (ret.clickable:activate filled-with))
     (colliders:add ret)
+    (setmetatable ret slot-mt)
     ret))

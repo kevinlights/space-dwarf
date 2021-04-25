@@ -19,7 +19,13 @@
              : quad
              :slots [slot1]
              :type :col
+             : colliders
+             :h 16
+             :w 24
              :image atlas.image}]
     (setmetatable ret anvil-mt)
+    ;;(colliders:add ret)
+    (tset ret :clickable ((require :prefab-clickable) nil (- x 2) (- y 5) ret))
+    (ret.clickable:activate "AN")
     (colliders:add ret)
     ret))

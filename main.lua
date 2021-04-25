@@ -1,3 +1,20 @@
+-- Scale the display (in lieu of a Fullscreen Option :/ )
+local _width, _height, flags = love.window.getMode( )
+local width, height = love.window.getDesktopDimensions( flags.display )
+local maxWidth = math.floor(width / 400)
+local maxHeight = math.floor((height - 80) / 220)
+if (maxWidth > maxHeight)
+then
+   scale = maxHeight
+end
+
+if (maxWidth <= maxHeight)
+then
+   scale = maxWidth
+end
+
+love.window.setMode(scale * 400, scale * 220, flags)
+
 -- bootstrap the compiler
 local fennel_module = "lib.fennel"
 fennel = require (fennel_module)

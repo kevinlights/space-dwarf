@@ -41,7 +41,12 @@
              :rate 100
              :type :col
              :slots [slot1 slot2]
+             :h 24
+             :w 34
+             : colliders
              :image atlas.image}]
     (setmetatable ret furnace-mt)
+    (tset ret :clickable ((require :prefab-clickable) nil (- x 1) (+ y 8) ret))
+    (ret.clickable:activate "FU")
     (colliders:add ret)
     ret))
