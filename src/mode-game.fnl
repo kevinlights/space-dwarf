@@ -36,11 +36,11 @@
 
 
   ;; (when state.init
-  (state.objects.console:draw)
   ;;   )
   ;; (state.colliders:draw :click)
   ;;
   (love.graphics.pop)
+  (state.objects.console:draw)
   )
 
 (fn game.update [self dt]

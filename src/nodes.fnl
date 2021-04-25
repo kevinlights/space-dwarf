@@ -1,11 +1,11 @@
 ;; click, active, export-table :timer
 
-(local mater {:asteroid 10
-              :transport 10
-              :pirate 10
-              :drone 10
-              :diplomat 10
-              :corvette 10
+(local mater {:asteroid 6
+              :transport 30
+              :pirate 20
+              :drone 20
+              :diplomat 30
+              :corvette 40
               :cruiser 10})
 
 (local hardpoints {:asteroid []
@@ -58,7 +58,7 @@
                :states {:warp {:note (.. :warp- name) :requirements {:timer 15}}
                         :notification {:note (.. :notification- name) :requirements {:click :got-it}}
                         :battle {:note (.. :battle- name) :requirements {:timer 2}}
-                        :failure {:note (.. :failure- name) :mater mater :requirements {:timer 15}}
+                        :failure {:note (.. :failure- name) :mater 10 :requirements {:timer 15}}
                         :success {:note (.. :success- name) :mater mater :requirements {:timer 15}}
                         }
                }

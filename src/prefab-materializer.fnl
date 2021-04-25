@@ -8,14 +8,15 @@
 
 (fn materializer.update [self dt]
   (let [slot (. self :slots 1)]
-    (when (= false (. slot :filled-with))
+    (when (and (= false (. slot :filled-with))
+               (> self.available-mater 0))
       (tset self :timer (+ self.timer dt))
       (when (> self.timer self.period)
+        (love.event.push :mater-change -1)
         (tset self :timer 0)
         (slot:set :MA))
       ))
-  (each [_ slot (pairs self.slots)] (slot:update dt))
-  )
+  (each [_ slot (pairs self.slots)] (slot:update dt)))
 
 (local materializer-mt {:__index materializer})
 
@@ -30,6 +31,7 @@
              : quad
              : top-quad
              :timer 0
+             :available-mater 1
              :period 1
              :slots [slot1]
              :type :col

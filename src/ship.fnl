@@ -9,19 +9,21 @@
         :Drone {:w 32 :h 32 :x 21 :y 16}})
 
 (fn ship-draw [ship]
+  (love.graphics.push "all")
+
   (love.graphics.draw ship.image ship.quads.ship ship.pos.x ship.pos.y)
   (let [slots ship.table.slots
         (dx dy) (ship.quads.ship:getViewport)]
     (each [i hardpoint (ipairs ship.hardpoints)]
       (when hardpoint.slot
         (love.graphics.draw ship.image (. ship.quads.guns i) ship.pos.x ship.pos.y)
+        (when (not (or hardpoint.free-support hardpoint.support-slot)) (love.graphics.setColor 0.8 0.1 0.1 1))
+        ;; (pp ["free-support" hardpoint.free-support])
         (love.graphics.draw ship.image (. ship.quads.icons i) ship.pos.x ship.pos.y)
-      ;; (let [slot (. slots index)]
-      ;;   (slot:draw (+ ship.pos.x -9 (- (. ship.hardpoints i 1) dx))
-      ;;              (+ ship.pos.y -15 (- (. ship.hardpoints i 2) dy))
-      ;;              true))
+        (love.graphics.setColor 1 1 1 1)
         (hardpoint:draw))
       ))
+  (love.graphics.pop)
   )
 (fn ship-draw-outline [ship w h]
   (let [{: x : y} ship.pos]
@@ -64,9 +66,26 @@
   (let [count ship.count
         slots ship.table.slots
         options (lume.invert [:laser :point-defense :ceramic-armour :missile-launcher
-                              :shield])]
+                              :shield])
+        aux (lume.invert [:missile :mass-ordinance :capacitor])
+        all (lume.invert [:laser :point-defense :ceramic-armour :missile-launcher
+                          :shield :missile :mass-ordinance :capacitor])
+        supports {:laser :capacitor :point-defense :mass-ordinance :ceramic-armour true :missile-launcher :missile :shield :capacitor}
+        fun (fn filter-slots [options]
+              (-> slots
+                  (lume.map (fn [slot] (slot:complete? options)))
+                  (lume.filter (fn [slot] slot))
+                  (lume.map (fn [slot] (. slot :container :build)))
+                  ))
+        ]
     ;; (set active [])
     ;; (lume.clear active)
+    (set ship.loadout [])
+    (var aux-slots {})
+    (each [_ slot (ipairs slots)]
+      (when (and (= :finished slot.category) (. aux slot.container.build))
+        (tset aux-slots slot.container.build slot)))
+
     (for [i 1 count]
       (let [hardpoint (. ship.hardpoints i)]
         (hardpoint:set-index false)))
@@ -75,11 +94,30 @@
       (when (and (= :finished slot.category) (. options slot.container.build) (<= i count))
         (let [hardpoint (. ship.hardpoints i)]
           (hardpoint:set-index slot)
+          ;; (pp ["supports" slot.container.build (. supports slot.container.build) ])
+          (let [depends-on (. supports slot.container.build)]
+            (match (type depends-on)
+              :boolean (do (tset hardpoint :free-support true)
+                           (tset hardpoint :support-slot false)
+                           (table.insert ship.loadout slot.container.build)
+                           )
+              :string (do
+                        (tset hardpoint :free-support false)
+                        (tset hardpoint :support-slot (. aux-slots depends-on))
+                        (table.insert ship.loadout slot.container.build))
+              :nil (do (tset hardpoint :free-support false)
+                        (tset hardpoint :support-slot false)))
+            )
           (hardpoint.clickable:activate (slot.container:name))
           (hardpoint.clickable:update 0))
         (set i (+ i 1))
         )
       )
+
+    (set ship.active (filter-slots all))
+
+    ;; (set ship.loadout (lume.slice (lume.filter ship.active (fn [active] (. options active))) 3))
+    ;; (set ship.aux (lume.filter ship.active (fn [active] (. aux active))))
     ))
 
 

@@ -1,5 +1,12 @@
 (local state (require :state))
 
+(fn love.handlers.mater-change [value]
+  (let [mater-meter (. state :objects :mater-meter)
+        materializer (. state :objects :materializer)]
+    (mater-meter:change value)
+    (tset materializer :available-mater mater-meter.value)
+    ))
+
 (fn love.handlers.hover [element map]
   ;; (pp [element map])
   )

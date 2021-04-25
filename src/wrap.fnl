@@ -14,7 +14,11 @@
 
 (fn love.load [args uargs]
   (when (= :web (. args 1))
-    (tset state :web true))
+    (tset state :web true)
+    (set _G.scale 3)
+    (local (_width _height flags) (love.window.getMode))
+    (love.window.setMode (* scale 400) (* scale 220) flags))
+
   (love.graphics.setBackgroundColor params.colours.black)
   (love.filesystem.setIdentity "delivery-steve")
   (when (not (love.filesystem.getInfo (love.filesystem.getSaveDirectory)))

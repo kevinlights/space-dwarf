@@ -1,13 +1,21 @@
 (local slot {})
 
+(fn draw-complete [self x y clean?]
+  (when (not clean?)
+    (love.graphics.setColor params.colours.red)
+    (love.graphics.rectangle :fill (+ (or x self.pos.x) 4) (+ (or y self.pos.y) 8) 10 8 2)
+    (love.graphics.setColor params.colours.dark-blue)
+    (let [ratio (/ self.wear 10)]
+      (love.graphics.rectangle :fill (+ (or x self.pos.x) 4) (+ (or y  self.pos.y) 8 (* 8 (- 1 ratio)))  10 (* ratio 8) 2))
+    (love.graphics.setColor 1 1 1 1)
+    )
+  (self.container:draw (or x self.pos.x) (or y self.pos.y)))
+
 (fn slot.draw [self x y clean?]
   (match self.filled-with
     false nil
     :CO (self.container:draw (or x self.pos.x) (or y self.pos.y))
-    :FI (do
-          (when (not clean?)
-            (love.graphics.circle :fill (+ (or x self.pos.x) 9) (+ (or y self.pos.y) 14) 4))
-          (self.container:draw (or x self.pos.x) (or y self.pos.y)))
+    :FI (draw-complete self x y clean?)
     _ (love.graphics.draw self.image self.quad (or x self.pos.x) (or y self.pos.y)))
   )
 (local s2c {:HF1 :filled-form
@@ -240,6 +248,23 @@
   (self.clickable:remove)
   (erase-values self))
 
+(fn slot.delete [self]
+  (if self.container
+      (do (love.event.push :mater-change (# self.container.quads))
+          (self:erase))
+      (or (= :hot-shape self.category)
+          (= :tempered-shape self.category)
+          (= :etched-shape self.category)
+          (= :logical-unit self.category)
+          (= :explosive self.category))
+      (do (love.event.push :mater-change 1)
+          (self:erase))
+    ))
+
+(fn slot.complete? [self options]
+  (when (and (= :finished self.category) (. options self.container.build))
+        self))
+
 (fn create [filled-with atlas parent index x y colliders]
   (local state (require :state))
   (let [quad (. atlas :quads "Blocks.aseprite" filled-with)
@@ -255,7 +280,7 @@
              :category (if filled-with (slice-to-category filled-with) false)
              :filled-with filled-with
              :quad quad
-             :wear false
+             :wear 10
              : colliders
              :order 1
              :image atlas.image}]

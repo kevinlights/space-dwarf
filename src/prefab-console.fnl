@@ -24,6 +24,7 @@
 
 (var title-font (assets.fonts.fffforwa (* params.title-font-size scale)))
 (var text-font (assets.fonts.inconsolata (* params.text-font-size scale)))
+(text-font:setFilter :nearest :nearest)
 (var button-font (assets.fonts.fffforwa (* params.button-font-size scale)))
 
 (var title-height (title-font:getHeight))
@@ -44,7 +45,7 @@
 (fn draw-description [description]
   (when description.canvas
     (let [{: canvas : x : y : w : scroll : h : max-scroll} description]
-      (love.graphics.draw canvas x y)
+      (love.graphics.draw canvas (mf x) (mf y))
       (when (> max-scroll 0)
         (let [ratio (/ h (+ h max-scroll))
               sh (* h ratio)];;(lume.clamp (* h ratio) h (/ h 3))]
@@ -93,6 +94,7 @@
         canvas (love.graphics.newCanvas width height)
         prefab-clickable (require :prefab-clickable)
         ]
+    (canvas:setFilter "nearest" "nearest")
     (love.graphics.setCanvas canvas)
     (love.graphics.setFont text-font)
     (love.graphics.printf text 0 0 (mf width) :left)
@@ -277,9 +279,13 @@
 
 (fn console.draw [self]
   (love.graphics.push)
+  (love.graphics.scale scale)
   (love.graphics.draw self.background.image self.background.quad (/ self.pos.x 1) (/  (+ self.pos.y) 1))
-  (love.graphics.scale (/ 1 scale))
-  (love.graphics.translate (* scale self.pos.x) (* scale self.pos.y))
+  (love.graphics.pop)
+  (love.graphics.push)
+
+  ;; (love.graphics.scale (/ 1 scale))
+  (love.graphics.translate (mf (* scale self.pos.x)) (mf (* scale self.pos.y)))
   (draw-title self.current-note.title)
   (draw-image self.current-note.image)
   (draw-description self.current-note.description)
@@ -373,6 +379,7 @@
 
   (set title-font (assets.fonts.fffforwa (* params.title-font-size scale)))
   (set text-font (assets.fonts.inconsolata (* params.text-font-size scale)))
+  (text-font:setFilter :nearest :nearest)
   (set button-font (assets.fonts.fffforwa (* params.button-font-size scale)))
 
   (set self.current-note (initialize-note (notes self.note) self.colliders)))

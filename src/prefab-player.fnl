@@ -128,7 +128,10 @@
   (tset player :closest-slot (closest-slot player))
   (slot-interact player))
 
-(fn delete-slot-callback [player])
+(fn delete-slot-callback [player]
+  (pp "delete")
+  (: (. player.slots 1) :delete)
+  )
 
 (fn player.keypressed [player key]
   (match key

@@ -31,6 +31,9 @@
              : quads
              : hardpoints
              : count
+             :active []
+             :loadout []
+             :aux []
              : table
              :image atlas.image
              }

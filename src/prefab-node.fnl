@@ -99,10 +99,18 @@
 
 (fn goto-failure [self]
   (tset self :text "Preparing to Warp")
+  (pp (. self.states :failure))
+  (let [mater (. self.states :failure :mater)]
+    (when mater
+      (love.event.push :mater-change mater)))
   (goto self :failure))
 
 (fn goto-success [self]
   (tset self :text "Preparing to Warp")
+  (pp (. self.states :success))
+  (let [mater (. self.states :success :mater)]
+    (when mater
+      (love.event.push :mater-change mater)))
   (goto self :success))
 
 (fn initialize-node [node name]

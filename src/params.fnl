@@ -6,6 +6,7 @@
            :ui-text (colour.hex-to-rgba "#433455")
            :sky-text (colour.hex-to-rgba "#666092")
            :blue   (colour.hex-to-rgba "#0188a5")
+           :dark-blue   (colour.hex-to-rgba "#ffffff")
            :black  (colour.hex-to-rgba "#222034")
            :red    (colour.hex-to-rgba "#df0772")
            :grey   (colour.hex-to-rgba "#595652")

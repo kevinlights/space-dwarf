@@ -34,4 +34,6 @@
 
     (instantiate-object state :table-recipe atlas 384 20 {: colliders : prefab-slot})
     (instantiate-object state :node atlas 42 80 {:first :astroid})
+
+    (instantiate-object state :mater-meter atlas 0 20)
     ))
