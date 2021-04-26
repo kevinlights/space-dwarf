@@ -30,9 +30,9 @@ if [ ! -f $release_dir/$name-$version.love ]; then
 fi
 
 release="compat"
-canvas_colour="197, 204, 184"
+canvas_colour="62, 50, 100"
 page_colour=$canvas_colour
-text_colour="102, 96, 146"
+text_colour="223, 7, 114"
 initial_memory=0 #$(du -b $release_dir/$name-$version.love | awk '{print $1}')
 title=$(echo $name-$version | sed -r 's/\<./\U&/g' | sed -r 's/-/\ /g')
 

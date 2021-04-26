@@ -1,4 +1,4 @@
-VERSION=0.1.0
+VERSION=0.2.0
 LOVE_VERSION=11.3
 NAME=space-dwarf
 ITCH_ACCOUNT=alexjgriffith
@@ -78,6 +78,6 @@ uploadlove: releases/$(NAME)-$(VERSION).love
 uploadweb: releases/$(NAME)-$(VERSION)-web.zip
 	butler push $^ $(ITCH_ACCOUNT)/$(NAME):web --userversion $(VERSION)
 
-upload: uploadlinux uploadwindows uploadlove uploadweb cleansrc
+upload: uploadlinux uploadwindows uploadlove uploadweb uploadmac cleansrc
 
-release: linux windows web upload cleansrc
+release: linux windows web mac upload cleansrc
