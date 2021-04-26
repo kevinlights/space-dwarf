@@ -10,6 +10,9 @@
 (fn ship.update [self dt]
   (shared.ship-update-weapons self self.active-index))
 
+(fn ship.get-supported-hardpoints [self mode]
+  (shared.get-supported-hardpoints self mode))
+
 (local ship-mt {:__index ship})
 
 (fn create [atlas x y {: colliders : table}]

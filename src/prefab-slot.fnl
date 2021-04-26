@@ -1,5 +1,7 @@
 (local slot {})
 
+(fn db [text])
+
 (fn draw-complete [self x y clean?]
   (when (not clean?)
     (love.graphics.setColor params.colours.red)
@@ -112,7 +114,8 @@
   (tset slot-b :filled-with slot-a.filled-with)
   (tset slot-b :quad slot-a.quad)
   (tset slot-b :temperature slot-a.temperature)
-  (tset slot-b :container slot-a.container))
+  (tset slot-b :container slot-a.container)
+  (tset slot-b :wear slot-a.wear))
 
 (fn erase-values [slot]
   (tset slot :category false)
@@ -120,6 +123,7 @@
   (tset slot :quad nil)
   (tset slot :temperature 0)
   (tset slot :container false)
+  (tset slot :wear 10)
   (slot.clickable:erase)
   )
 
@@ -129,7 +133,7 @@
   )
 
 (fn slot.try-mix [self target]
-  (pp ["interact" self.category self.parent target.category])
+  (db ["interact" self.category self.parent target.category])
   (match [self.category self.parent target.category]
     [:form :anvil :hot-matter] (do
                                  (self:set (to-filled self.category self.filled-with))
@@ -210,7 +214,8 @@
       (self.clickable:activate (self.container:name))
       )
 
-    (self:heat dt (or rate -30)))
+    (self:heat dt (or rate -30))
+    )
   )
 
 (fn slot.quench [self]

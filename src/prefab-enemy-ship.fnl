@@ -2,6 +2,8 @@
 
 (local shared (require :ship))
 
+(fn db [text])
+
 (fn enemy-ship.draw [self]
   (when self.quads
     (shared.ship-draw self)
@@ -11,11 +13,10 @@
   (when self.quads
     (shared.ship-update-weapons self self.active-index)))
 
-(local ship-setups {:asteroids-1 {:name :Asteroids :has []}
-                    :pirate-1 {:name :Sloop :has [:point-defense :mass-ordinance]}
-                    :pirate-2 {:name :Sloop :has [:point-defense :mass-ordinance :ceramic-armour]}
-                    :boss {:name :Cruiser :has [:point-defense :laser :missile-launcher
-                                                :shield :ceramic-armour]}})
+(fn enemy-ship.get-supported-hardpoints [self mode]
+  (shared.get-supported-hardpoints self mode))
+
+(local ship-setups {})
 
 (fn erase-ship [self]
   (when self.hardpoints
@@ -27,6 +28,7 @@
   )
 
 (fn enemy-ship.set [self setup]
+  (db ["make-enemy-ship" setup (. ship-setups setup)])
   (if (or (not setup) (not (. ship-setups setup)))
       (erase-ship self)
       (let [prefab-clickable (require :prefab-clickable)
@@ -59,6 +61,7 @@
           (slot:erase))
         (each [i value (ipairs has)]
           (let [slot (. slots i)]
+            (db ["slot make" value])
             (slot:make value)))
         (each [key value (pairs ret)]
           (tset self key value))

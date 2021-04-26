@@ -18,12 +18,22 @@
 (fn hardpoint.wear [self value]
   (set self.slot.wear (- self.slot.wear value)))
 
-(fn hardpoint.wearSupport [self value]
+(fn hardpoint.wear-support [self value]
   (when self.support-slot
     (set self.support-slot.wear (- self.support-slot.wear value))))
 
-(fn hardpoint.getName [self]
-  (self.slot.container.build))
+(fn hardpoint.get-name [self]
+  (when (and self.slot (= :table (type self.slot)))
+    self.slot.container.build))
+
+(fn hardpoint.get-support-name [self]
+  (if self.free-support
+      (self:get-name)
+      (and self.support-slot (= :table (type self.support-slot)))
+      self.support-slot.container.build))
+
+(fn hardpoint.supported [self]
+  (or self.free-support self.support-slot))
 
 (fn hardpoint.delete [self]
   (self.clickable:remove self))
@@ -35,6 +45,7 @@
         ret {:pos {: x : y}
              : dx
              : dy
+             :name :hardpoint
              :size {:w 10 :h 10}
              :off {:x (- (+ dx 5)) :y (- (+ dy 8))}
              :slot false

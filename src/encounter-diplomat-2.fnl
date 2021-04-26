@@ -42,13 +42,13 @@ The ship's condition is critical. Warping out of this sector immediately!")
 
   :success
   {
-   :title "Matter Acquired"
+   :title "Mater Acquired"
     :description (.. "Now that's what I call a Double Dipping of Diplomacy!
 
 We have managed to pick up " mater " mater when passing through the debris field.
 
 Prepare to warp out of this sector.")
-   :buttons [{:text "Picaaard!!!" :callback :got-it}]
+   :buttons [{:text "Picaaard!!!!!!" :callback :got-it}]
     }}
   )
 

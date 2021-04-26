@@ -1,4 +1,5 @@
 ;; click, active, export-table :timer
+(fn db [text])
 
 (local mater {:asteroid 6
               :transport 30
@@ -11,14 +12,14 @@
 (local hardpoints {:asteroid []
                    :transport [:point-defense]
                    :pirate [:missile-launcher :ceramic-armour]
-                   :drone [:laser :sheild]
-                   :diplomat [:ceramic-armour :sheild :missile-launcher]
-                   :corvette [:missile-launcher :sheild :laser :point-defense]
-                   :cruiser [:missile-launcher :sheild :laser :ceramic-armour :point-defense]})
+                   :drone [:laser :shield]
+                   :diplomat [:ceramic-armour :shield :missile-launcher]
+                   :corvette [:missile-launcher :shield :laser :point-defense]
+                   :cruiser [:missile-launcher :shield :laser :ceramic-armour :point-defense]})
 
 (local aux {:asteroid []
             :transport [:mass-ordinance]
-            :pirate [:mass-ordinance :missiles]
+            :pirate [:mass-ordinance :missile]
             :drone [:capacitor :capacitor]
             :diplomat [:missile :missile :missile :capacitor]
             :corvette [:mass-ordinance :capacitor :capacitor :missile :missile]
@@ -36,8 +37,8 @@
                    :pirate-2 [:pirate 2 :Sloop]
                    ;; :drone-1 [:drone 1 :Drone]
                    :drone-2 [:drone 2 :Drone]
-                   :diplomat-1 [:diplomat 2 :Diplomat]
-                   :diplomat-2 [:diplomat 3 :Diplomat]
+                   :diplomat-1 [:diplomat 2 :Yacht]
+                   :diplomat-2 [:diplomat 3 :Yacht]
                    ;; :corvette-1 [:corvette 3 :Corvette]
                    :corvette-2 [:corvette 4 :Corvette]
                    ;; :cruiser-1 [:cruiser 4 :Cruiser]
@@ -45,20 +46,21 @@
                    })
 
 (fn setup-encounter [name encounter ship-setups style notes hardpoint-count hardpoints aux mater]
-  (let [loadout (lume.slice hardpoints hardpoint-count)
+  (let [loadout (lume.slice hardpoints 1 hardpoint-count)
         enemy-table (lume.concat loadout aux)]
     ;; instantiate notes for encounter
     (each [state value (pairs (encounter.notes loadout aux mater style))]
       (notes (.. state "-" name) value))
     ;; instatantiate ship setup for encounter
     (tset ship-setups name {:name style :has enemy-table})
+    (db ship-setups)
     ;; instatantiate node for encounter
     (let [ret {:state (or encounter.state :warp)
                ;; Default States
                :states {:warp {:note (.. :warp- name) :requirements {:timer 15}}
                         :notification {:note (.. :notification- name) :requirements {:click :got-it}}
-                        :battle {:note (.. :battle- name) :requirements {:timer 2}}
-                        :failure {:note (.. :failure- name) :mater 10 :requirements {:timer 15}}
+                        :battle {:note (.. :battle- name)}
+                        :failure {:note (.. :failure- name) :mater 10 :requirements {:timer 5}}
                         :success {:note (.. :success- name) :mater mater :requirements {:timer 15}}
                         }
                }

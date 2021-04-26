@@ -65,13 +65,19 @@
   (let [player-slot (. player :slots 1)
         closest-slot player.closest-slot]
     (when closest-slot
-       (closest-slot:try-mix player-slot)
+      (closest-slot:try-mix player-slot)
     )))
 
 (fn move-filter [_item other]
   (if (= :col other.type )
       :slide
       :cross))
+
+(fn update-fire-sound [pos]
+  (let [state (require :state)
+        furnace (. state :objects :furnace :pos)
+        volume (lume.clamp (/ (math.max 1 (- 200 (lume.distance pos.x pos.y furnace.x furnace.y))) 300) 0.05 0.25)]
+    (state.fire:setVolume volume)))
 
 (fn player.update [player dt]
   (local movement (require :lib.movement))
@@ -83,6 +89,7 @@
   (when (not m) (tset player.speed x 0) (tset player.speed y 0))
   (set player.pos.x (- ax player.off.x))
   (set player.pos.y (- ay player.off.y))
+  (update-fire-sound player.pos)
   (local animation (. player.animations player.animation))
   (tset player :moving m)
   (tset player :holding (. player :slots 1 :category))
@@ -129,7 +136,7 @@
   (slot-interact player))
 
 (fn delete-slot-callback [player]
-  (pp "delete")
+  ;; (pp "delete")
   (: (. player.slots 1) :delete)
   )
 

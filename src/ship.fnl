@@ -8,6 +8,8 @@
         :Cruiser {:w 62 :h 48 :x 2 :y 16}
         :Drone {:w 32 :h 32 :x 21 :y 16}})
 
+(fn db [text])
+
 (fn ship-draw [ship]
   (love.graphics.push "all")
 
@@ -17,8 +19,8 @@
     (each [i hardpoint (ipairs ship.hardpoints)]
       (when hardpoint.slot
         (love.graphics.draw ship.image (. ship.quads.guns i) ship.pos.x ship.pos.y)
-        (when (not (or hardpoint.free-support hardpoint.support-slot)) (love.graphics.setColor 0.8 0.1 0.1 1))
-        ;; (pp ["free-support" hardpoint.free-support])
+        (when (not (hardpoint:supported)) (love.graphics.setColor 0.8 0.1 0.1 1))
+        ;; (db ["free-support" hardpoint.free-support])
         (love.graphics.draw ship.image (. ship.quads.icons i) ship.pos.x ship.pos.y)
         (love.graphics.setColor 1 1 1 1)
         (hardpoint:draw))
@@ -83,6 +85,8 @@
     (set ship.loadout [])
     (var aux-slots {})
     (each [_ slot (ipairs slots)]
+      (when (< slot.wear 1)
+        (slot:erase))
       (when (and (= :finished slot.category) (. aux slot.container.build))
         (tset aux-slots slot.container.build slot)))
 
@@ -94,7 +98,7 @@
       (when (and (= :finished slot.category) (. options slot.container.build) (<= i count))
         (let [hardpoint (. ship.hardpoints i)]
           (hardpoint:set-index slot)
-          ;; (pp ["supports" slot.container.build (. supports slot.container.build) ])
+          ;; (db ["supports" slot.container.build (. supports slot.container.build) ])
           (let [depends-on (. supports slot.container.build)]
             (match (type depends-on)
               :boolean (do (tset hardpoint :free-support true)
@@ -103,7 +107,7 @@
                            )
               :string (do
                         (tset hardpoint :free-support false)
-                        (tset hardpoint :support-slot (. aux-slots depends-on))
+                        (tset hardpoint :support-slot (or (. aux-slots depends-on) false))
                         (table.insert ship.loadout slot.container.build))
               :nil (do (tset hardpoint :free-support false)
                         (tset hardpoint :support-slot false)))
@@ -121,5 +125,13 @@
     ))
 
 
+(fn get-supported-hardpoints [ship mode]
+  (let [offensive (lume.invert [:point-defense :laser :missile-launcher])
+        defensive (lume.invert [:point-defense :shield :ceramic-armour])]
+    (match mode
+      :attack (lume.filter ship.hardpoints (fn [hardpoint] (and (= (type hardpoint.slot) :table) hardpoint.slot.filled-with (hardpoint:supported) (. offensive (hardpoint:get-name)))))
+      :defend (lume.filter ship.hardpoints (fn [hardpoint] (and (= (type hardpoint.slot) :table) hardpoint.slot.filled-with (hardpoint:supported) (. defensive (hardpoint:get-name)))))
+      _ (lume.filter ship.hardpoints (fn [hardpoint] (and (= (type hardpoint.slot) :table) hardpoint.slot.filled-with (> hardpoint.slot.wear 0))))))
+  )
 
-{: ship-get-quads : ship-update-weapons : ship-draw : data : ship-draw-outline}
+{: ship-get-quads : ship-update-weapons : ship-draw : data : ship-draw-outline : get-supported-hardpoints}

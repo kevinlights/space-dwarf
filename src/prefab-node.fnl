@@ -1,6 +1,10 @@
 (local node {})
 
+(fn db [text])
+
 (var text-font (assets.fonts.inconsolata (* 6 scale)))
+
+(local battle (require :battle))
 
 (fn node.draw [self]
   (when (and self.state self.text)
@@ -39,11 +43,11 @@
                        (match key
                          :click false
                          :active (do
-                                   ;; (pp {:active active :value value})
+                                   ;; (db {:active active :value value})
                                    (lume.all value (fn [v] (. active v))))
                          :export (lume.all value (fn [v] (. export v)))
                          :timer (do (set self.period value)
-                                    ;; (pp [self.timer self.period])
+                                    ;; (db [self.timer self.period])
                                     (> self.timer self.period))
                          )))
         )
@@ -55,6 +59,21 @@
 (fn node.update [self dt]
   (tset self :timer (+ self.timer dt))
   (handle-requirements self)
+  ;; if its a battle and the battle doesn't have
+  ;; special requirements call battle module
+  (when (= self.state :failure)
+    (love.event.push :hit :no-sound))
+  (when (and (= :battle self.state) (not self.requirements))
+    (tset self :battle (battle dt self self.battle))
+    (when (~= self.period self.battle.period)
+      (tset self :timer 0)
+      (tset self :period self.battle.period))
+    (tset self :text self.battle.state.text)
+    (when self.battle.state.resolved
+      (tset self :success self.battle.state.success)
+      (love.event.push :resolved self.battle.state.success)
+      )
+    )
   )
 
 (fn start-battle [self]
@@ -63,11 +82,12 @@
     (local next-state (. states :battle))
     (when (. next-state :text)
       (tset self :text (. next-state :text)))
-    (tset self :period 15)
     (tset self :timer 0)
+    (tset self :battle (battle 0 self))
+    (tset self :period self.battle.period)
     (tset self :requirements (. next-state :requirements))
     (tset self :state :battle)
-    (tset self :turn :enemy)
+    (tset self :turn :player)
     (when (. next-state :note)
       (console:clear (. next-state :note)))
     )
@@ -79,12 +99,14 @@
     (local next-state (. states state-name))
     (tset self :state state-name)
     (tset self :requirements (. next-state :requirements))
-    (pp ["next-state" state-name (. next-state :note)])
+    (db ["next-state" state-name (. next-state :note)])
+    (love.event.push :arrive)
     (when (. next-state :note)
       (console:clear (. next-state :note)))))
 
 (fn goto-notification [self]
   (local enemy-ship (. (require :state) :objects :enemy-ship))
+  (db ["notification" self.name])
   (enemy-ship:set self.name)
   (tset self :text "Prep Period")
   (goto self :notification))
@@ -99,7 +121,7 @@
 
 (fn goto-failure [self]
   (tset self :text "Preparing to Warp")
-  (pp (. self.states :failure))
+  (db (. self.states :failure))
   (let [mater (. self.states :failure :mater)]
     (when mater
       (love.event.push :mater-change mater)))
@@ -107,7 +129,7 @@
 
 (fn goto-success [self]
   (tset self :text "Preparing to Warp")
-  (pp (. self.states :success))
+  (db (. self.states :success))
   (let [mater (. self.states :success :mater)]
     (when mater
       (love.event.push :mater-change mater)))
@@ -115,24 +137,35 @@
 
 (fn initialize-node [node name]
   (let [nodes (require :nodes)
-        node-data (do ;;(pp name) (pp nodes)
+        node-data (do ;;(db name) (db nodes)
                     (. nodes name))
         console (. (require :state) :objects :console)
         state (. node-data.states node-data.state)]
+    (local starfield (. (require :state) :objects :starfield))
+    (local enemy-ship (. (require :state) :objects :enemy-ship))
+    (love.event.push :warp)
+    (starfield:warp)
+    (enemy-ship:set nil)
     (each [key value (pairs node-data)]
       (tset node key value))
+    (tset node :name name)
     (tset node :requirements (. state :requirements))
     (console:clear (. state :note))
   ))
 
 (fn goto-warp [self name]
-  (local starfield (. (require :state) :objects :starfield))
-  (local enemy-ship (. (require :state) :objects :enemy-ship))
-  (tset self :text "Warping")
-  (tset self :name name)
-  (starfield:warp)
-  (enemy-ship:set nil)
-  (initialize-node self name))
+  (if name
+      (do (local starfield (. (require :state) :objects :starfield))
+          (local enemy-ship (. (require :state) :objects :enemy-ship))
+          (love.event.push :warp)
+          (db [:Warpingto name])
+          (tset self :text "Warping")
+          (tset self :name name)
+          (starfield:warp)
+          (enemy-ship:set nil)
+          (initialize-node self name))
+      (love.event.push :game-over :timeout)
+      ))
 
 (fn select-node [order]
   (. [:asteroid-2 :transport :pirate-2 :drone-2 :diplomat-1 :diplomat-2 :corvette-2 :cruiser-2] order))
@@ -142,21 +175,25 @@
         states self.states
         success self.success]
     (local starfield (. (require :state) :objects :starfield))
-    (pp ["Node Next -" name])
+    (db ["Last Node -" name])
     (set self.timer 0)
     (set self.period 0)
     (match name
       :warp (do (starfield:fight) (goto-notification self))
       :notification (if (. states :ready) (goto-ready self) (goto-battle self))
       :ready (goto-battle self)
-      :battle (if success (goto-success self) (goto-failure self))
+      :battle (if success (let [enemy-ship (. (require :state) :objects :enemy-ship)]
+                            (enemy-ship:set nil)
+                            (goto-success self))
+                  (goto-failure self))
       :failure (goto-warp self (select-node self.node-order))
       :success (do (tset self :node-order (+ 1 self.node-order))
                    (goto-warp self (select-node self.node-order))))
     ))
 
-(fn node.set [self name]
+(fn node.set [self name number]
   (initialize-node self name)
+  (tset self :node-order (or number 1))
   (set self.timer 0))
 
 (local node-mt {:__index node})
@@ -166,6 +203,7 @@
     {:pos {: x : y} :size {:w 0 :h 0}
      :timer 0 :period 0
      :node-order 1
+     :battle {}
      :turn :enemy
      :name :asteroid-1
      :success true

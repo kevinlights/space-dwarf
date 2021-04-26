@@ -59,7 +59,7 @@ The ship's condition is critical. Warping out of this sector immediately!")
 
   :success
   {
-   :title "Matter Acquired"
+   :title "Mater Acquired"
     :description (.. "That Laser did the trick! That Slippery pirate's ship slipped right down my throat.
 
 We have managed to pick up " mater " mater when passing through the debris field.

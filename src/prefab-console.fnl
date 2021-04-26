@@ -1,5 +1,7 @@
 (local console {})
 
+(fn db [text])
+
 (local mf math.floor)
 
 (local notes (require :notes))
@@ -64,7 +66,7 @@
             params (require :params)]
         (when button.hover (love.graphics.setColor 0 0.4 0.4 1))
         (love.graphics.draw image quad x y 0 scale)
-        ;;(pp [button.element button.hover])
+        ;;(db [button.element button.hover])
         (love.graphics.setColor 1 1 1 1)
         (tset button :hover false)
         (love.graphics.setFont button-font)
@@ -183,7 +185,7 @@
                                              :active :click
                                              :element callback
                                              : colliders})}]
-        (pp [text quad])
+        (db [text quad])
         (tset ret i (setmetatable b functions-mt))))
     ret))
 

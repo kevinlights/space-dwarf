@@ -22,11 +22,18 @@ You are the only biological life-form on the SS Endeavour, which has been floati
   - Move with WSAD.
   - Pickup and put down items with SPACE.
   - Delete item in your hands with DELETE.
-  - Pause game by pressing P.
-  - Open the menu with TAB.
   - You can click on any element on screen for details."
              :buttons []}
   :credits {:title "Credits"
+            :description"
+Font (FFForwa) - (OFL)
+Font (Inconsolata) - (OFL)
+Sounds Effects -  NeadSimic, Nicole Marie, Jalastram, Blender Foundation, MentalSanityOff (CCBY 3/4)
+Library (Lume) - RXI (MIT/X11)
+Library (anim8,bump) - Enrique Cota (MIT)
+Engine (LÖVE) - LÖVE Dev Team (Zlib)
+Language (Fennel) - Calvin Rose (MIT/X11)
+Web Support (Love.js) Davidobot"
             :buttons []}
   :FU {:title "Furnace"
        :image :FU
@@ -225,11 +232,11 @@ A Missile store will be drained after two uses by a Missile Launcher."
 
   :EX {:title "Explosive"
        :image [:ET :plus :HM :equals :EX]
-       :description "Unstable heated matter that forms the core of Missiles."
+       :description "Unstable heated mater that forms the core of Missiles."
        :buttons []}
 
   :CO {:title "Work in Progress"
-       :description "A partially complete ship element. Press DELETE when holding to recapture the matter."
+       :description "A partially complete ship element. Press DELETE when holding to recapture the mater."
        :buttons []}
   })
 
@@ -273,11 +280,11 @@ A Missile store will be drained after two uses by a Missile Launcher."
                          "A very detailed structural unit. Used in the production of ship components."))
   (tset notes (.. :HS i)
         (make-repeatable i :HS "Heated Shape" heated-shape-image
-                         "Heated Matter formed into a useful shape."))
+                         "Heated Mater formed into a useful shape."))
   (tset notes (.. :F i) (make-repeatable i :F "Form" (fn [x] [x])
-                                         "Place this form on an anvil and fill with Heated Matter to produce a Heated Shape."))
+                                         "Place this form on an anvil and fill with Heated Mater to produce a Heated Shape."))
   (tset notes (.. :HF i) (make-repeatable i :HF "Filled Form" (fn [x] [x])
-                                          "This form is filled with Heated Matter."))
+                                          "This form is filled with Heated Mater."))
   )
 
 (fn [key value]

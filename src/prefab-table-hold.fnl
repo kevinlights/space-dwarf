@@ -32,14 +32,6 @@
              : colliders
              :type :col
              :image atlas.image}]
-    (slot1:make :ceramic-armour)
-    (slot2:make :point-defense)
-    (slot3:make :mass-ordinance)
-    (slot4:make :capacitor)
-    (slot5:make :laser)
-    (slot6:make :shield)
-    (slot7:make :missile-launcher)
-    (slot8:make :missile)
     (setmetatable ret table-export-mt)
     (tset ret :clickable ((require :prefab-clickable) nil (- x 1) (- y 3) ret))
     (ret.clickable:activate "table-hold")

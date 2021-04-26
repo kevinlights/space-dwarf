@@ -43,7 +43,7 @@ The ship's condition is critical. Warping out of this sector immediately!")
 
   :success
   {
-   :title "Matter Acquired"
+   :title "Mater Acquired"
     :description (.. "Time to end existence, fleshbag
 
 Prepare to destroy this sector, and all other sectors")

@@ -53,7 +53,7 @@ The ship's condition is critical. Warping out of this sector immediately!")
 
   :success
   {
-   :title "Matter Acquired"
+   :title "Mater Acquired"
     :description (.. "That Railgun did the trick! Now time to feed!
 
 We have managed to pick up " mater " mater when passing through the debris field.
@@ -66,7 +66,7 @@ Prepare to warp out of this sector.")
 
 (tset encounter :states
       {:notification {:requirements {:active [:point-defense] :export [:mass-ordinance]}}
-       :ready {:note :battle-transport :requirements {:click :got-it}}
+       :ready {:note :ready-transport :requirements {:click :got-it}}
 })
 
 encounter
