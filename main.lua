@@ -32,7 +32,7 @@ fennel.path = love.filesystem.getSource() .. "/?.fnl;" ..
 -- package.path = "./src/?.lua;".. package.path
 
 debug_mode = false
-pp = function(x) print(require("lib.fennelview")(x)) end
+pp = function(x) print(fennel.view(x)) end
 db = function(x)
    if (debug_mode == true) then
       local debug_info = debug.getinfo(1)

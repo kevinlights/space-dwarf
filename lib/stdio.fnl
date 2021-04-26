@@ -1,5 +1,5 @@
 (require "love.event")
-(local view (require "lib.fennelview"))
+(local view (. (require :lib.fennel) :view))
 
 ;; This module exists in order to expose stdio over a channel so that it
 ;; can be used in a non-blocking way from another thread.
