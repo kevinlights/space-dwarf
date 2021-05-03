@@ -66,6 +66,11 @@
   (if (not state.game-over)
       (draw-game self)
       (draw-game-over)
+      )
+  (when state.print-debug
+    (love.graphics.setColor 1 1 1 1)
+    (love.graphics.setFont text-font)
+    (love.graphics.printf "test 0.2.1" 10 10 200)
     )
   )
 

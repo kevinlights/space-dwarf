@@ -17,7 +17,10 @@
     (let [ratio (lume.clamp (if (~= self.period 0) (/ self.timer self.period) 1) 0 1)]
       (love.graphics.rectangle "fill" (* scale self.pos.x) (* scale (+ 1 self.pos.y)) (* ratio 76 scale) (* 14 scale) (* 4 scale) 2))
     (love.graphics.setColor 1 1 1 1)
-    (love.graphics.printf self.text (* scale (+ 3 self.pos.x)) (* scale (+ 4 self.pos.y)) (* 70 scale) :center)
+    ;; (love.graphics.printf self.text (* scale (+ 3 self.pos.x)) (* scale (+ 4 self.pos.y)) (* 70 scale) :center)
+    (love.graphics.printf self.text (* scale (+ -6 self.pos.x))
+                          (* scale (+ 4 self.pos.y))
+                          (+ (* scale 18) (* 70 scale)) :center)
     (love.graphics.pop)))
 
 (fn handle-requirements [self]

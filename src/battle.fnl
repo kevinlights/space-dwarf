@@ -87,11 +87,21 @@
 
 (fn destroy [battle value]
   (db ["destroy" value  (# battle.state.hardpoints)])
-  (let [to-destroy
+  (let [whos (if (= :enemy battle.state.turn) "Our " "Enemy ")
+        to-destroy
         (match value
-          :all (do (tset battle.state :text "All Hardpoints Destroyed!") battle.state.hardpoints)
-          :one (let [target (lume.randomchoice battle.state.hardpoints)] (tset battle.state :text (.. (. translate (target:get-name)) " Destroyed!")) [target])
-          _ [(do (tset battle.state :text (.. value "Destroyed!")) (choose battle.state.hardpoints value))]
+          :all (do (tset battle.state :text (.. "All " whos "Hardpoints Destroyed!")) battle.state.hardpoints)
+          :one (let [target (lume.randomchoice battle.state.hardpoints)]
+                 (tset battle.state :text (..
+                                           whos
+                                           (. translate (target:get-name))
+                                           " Destroyed!")) [target])
+          _ [(do
+               (tset battle.state :text (..
+                                         whos
+                                         value
+                                         "Destroyed!"))
+               (choose battle.state.hardpoints value))]
           )]
     ;; (db [:to-destroy (lume.map to-destroy (fn [hardpoint] (hardpoint:get-name)))])
     (db "destroy?")
@@ -204,7 +214,8 @@
   (tset battle-state :offensive-hardpoints (battle-state.offensive:get-supported-hardpoints :attack))
   (db ["# of offensive hardpoints" (# battle-state.offensive-hardpoints)])
   (db ["offensive hardpoint names" (lume.map battle-state.offensive-hardpoints (fn [hardpoint] (hardpoint:get-name)))])
-  (tset battle-state :attack (lume.randomchoice battle-state.offensive-hardpoints))
+  (tset battle-state :attack (when (> (# battle-state.offensive-hardpoints) 0)
+                                 (lume.randomchoice battle-state.offensive-hardpoints)))
   (db ["found attack" (type battle-state.attack)])
   (if battle-state.attack
       (do
@@ -229,6 +240,7 @@
         enemy-ship (. state :objects :enemy-ship)]
     (local battle-state battle.state)
     ;; (if (= :player node.turn) (lg battle "PLAYER TURN") (lg battle "ENEMY TURN"))
+    (tset battle-state :turn node.turn)
     (tset battle-state :defensive (if (= :enemy node.turn) ship enemy-ship))
     (tset battle-state :offensive (if (= :enemy node.turn) enemy-ship ship))
     (tset battle-state :attack-name nil)

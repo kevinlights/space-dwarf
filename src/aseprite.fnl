@@ -3,9 +3,14 @@
 (fn aseprite.draw [self frame slice x y]
   (love.graphics.draw self.image (. self.quad frame slice) x y))
 
-(local aseprite-mt {:__index aseprite})
+(local aseprite-mt {:__index aseprite
+                    :__name aseprite
+                    :__call (fn [] "pp call")
+                    :__doc "test"
+                    :__fennelview (fn [] [":@table<aseprite>:"])})
 
 (fn make-atlas [data-file image]
+  "Load a aseprite json export file."
   (local json (require :lib.json))
   (let [data (json.decode (love.filesystem.read data-file))
         frame-data (. data :frames)
@@ -26,9 +31,5 @@
                      source-size.h))
         (tset (. atlas.quads frame-name) slice-value.name quad)
         (tset atlas.info slice-value.name (or slice-value.data ""))
-        (tset atlas.size slice-value.name slice-bounds)
-        )
-      )
-    (setmetatable atlas aseprite-mt)
-    )
-  )
+        (tset atlas.size slice-value.name slice-bounds)))
+    (setmetatable atlas aseprite-mt)))
