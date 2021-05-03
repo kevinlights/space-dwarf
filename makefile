@@ -1,4 +1,4 @@
-VERSION=0.2.1
+VERSION=0.2.2
 LOVE_VERSION=11.3
 NAME=space-dwarf
 ITCH_ACCOUNT=alexjgriffith

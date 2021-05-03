@@ -2,53 +2,86 @@
 
 (local game {})
 
+(var big-title-font (assets.fonts.fffforwa (* 25 scale)))
+(var title-font (assets.fonts.fffforwa (* 15 scale)))
+(title-font:setLineHeight 1.2)
+(var text-font (assets.fonts.inconsolata (* 10 scale)))
+(var footer-font (assets.fonts.inconsolata (* 5 scale)))
+
+
 (fn draw-background [self]
   (love.graphics.draw assets.sprites.Background 0 0 0)
   (love.graphics.draw assets.sprites.Background 0 -220 0))
+
+(fn draw-init [self]
+  (love.graphics.push)
+  (love.graphics.scale scale)
+  (state.objects.starfield:draw)
+  (state.objects.console:move)
+  (state.objects.ship:draw 150 90 true)
+  (love.graphics.pop)
+  (love.graphics.setFont big-title-font)
+  (love.graphics.setColor 1 1 1 1)
+  (love.graphics.printf "Space Dwarf" 0 (* scale 50) (* scale 400) :center)
+  (love.graphics.setColor 1 1 1 1)
+  (state.objects.console:draw true true)
+
+  (love.graphics.setFont text-font)
+  (love.graphics.setColor 1 1 1 1)
+  (love.graphics.printf "Game By: AlexJGriffith" 0 (* scale 205) (* scale 395) :right)
+  (love.graphics.setColor 1 1 1 1)
+
+  (when state.display
+    (love.graphics.setFont text-font)
+    (love.graphics.setColor 1 1 1 1)
+    (love.graphics.printf state.display 30 (* scale 120) (* scale 370) :left)
+    (love.graphics.setColor 1 1 1 1)
+    )
+
+  )
+
+(fn draw-wait [self]
+  (love.graphics.push)
+  (love.graphics.scale scale)
+  (state.objects.starfield:draw)
+  (love.graphics.pop)
+  (state.objects.console:move)
+  (state.objects.console:draw)
+  )
 
 (fn draw-game [self]
   (when (> state.hit-timer 0)
     (love.graphics.setColor 1 0 0 1)
     (love.graphics.translate (math.random 3) (math.random 3)))
-    (love.graphics.push)
+  (love.graphics.push)
 
   (love.graphics.scale scale)
   (state.objects.starfield:draw)
   (state.objects.console:move)
-  (when (not state.init)
-    (draw-background)
-    (local player state.objects.player)
-    (each [key value (pairs state.objects)]
-      (when (and
-             (~= :console value.name)
-             (~= :starfield value.name)
-             (~= :player value.name) (>= (+ player.pos.y player.off.y player.size.h)
-                                         (+ value.pos.y (if value.off value.off.y 0) value.size.h)))
+  (draw-background)
+  (local player state.objects.player)
+  (each [key value (pairs state.objects)]
+    (when (and
+           (~= :console value.name)
+           (~= :starfield value.name)
+           (~= :player value.name) (>= (+ player.pos.y player.off.y player.size.h)
+                                       (+ value.pos.y (if value.off value.off.y 0) value.size.h)))
         (value:draw))
-      )
-    (player:draw)
-    (each [key value (pairs state.objects)]
-      (when (and
-             (~= :console value.name)
-             (~= :starfield value.name)
-             (~= :player value.name) (< (+ player.pos.y player.off.y player.size.h)
-                                        (+ value.pos.y (if value.off value.off.y 0) value.size.h)))
-        (value:draw))
-      )
+    )
+  (player:draw)
+  (each [key value (pairs state.objects)]
+    (when (and
+           (~= :console value.name)
+           (~= :starfield value.name)
+           (~= :player value.name) (< (+ player.pos.y player.off.y player.size.h)
+                                      (+ value.pos.y (if value.off value.off.y 0) value.size.h)))
+      (value:draw))
     )
 
 
-  ;; (when state.init
-  ;;   )
-  ;; (state.colliders:draw :click)
-  ;;
+
   (love.graphics.pop)
   (state.objects.console:draw))
-
-(var title-font (assets.fonts.fffforwa (* 15 scale)))
-(title-font:setLineHeight 1.2)
-(var text-font (assets.fonts.inconsolata (* 10 scale)))
-(var footer-font (assets.fonts.inconsolata (* 5 scale)))
 
 (fn draw-game-over []
   (love.graphics.setColor params.colours.blue)
@@ -63,21 +96,17 @@
   )
 
 (fn game.draw [self]
-  (if (not state.game-over)
-      (draw-game self)
-      (draw-game-over)
-      )
-  (when state.print-debug
-    (love.graphics.setColor 1 1 1 1)
-    (love.graphics.setFont text-font)
-    (love.graphics.printf "test 0.2.1" 10 10 200)
-    )
+  (match state.state
+    :init (draw-init self)
+    :wait (draw-wait self)
+    :main-game (draw-game self)
+    :game-over (draw-game-over))
   )
 
 (fn game.update [self dt]
   (each [key obj (pairs state.objects)]
     (obj:update dt))
-  (when state.init (state.fire:setVolume 0))
+  (when (~= :main-game state.state) (state.fire:setVolume 0))
   (tset state :hit-timer (- state.hit-timer dt))
   (when (not false) (collectgarbage)))
 
@@ -122,7 +151,7 @@
 )
 
 (fn game.keypressed [self key]
-  (when state.game-over
+  (when (= :game-over state.state)
     (match key
       :escape (love.event.quit)))
   (match (state.objects.player:keypressed key)

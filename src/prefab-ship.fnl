@@ -2,9 +2,17 @@
 
 (local shared (require :ship))
 
-(fn ship.draw [self]
-  (shared.ship-draw self)
-  (shared.ship-draw-outline self 80 48)
+(fn ship.draw [self x? y? no-outline?]
+  (let [px self.pos.x
+        py self.pos.y]
+    (tset self.pos :x (or x? px))
+    (tset self.pos :y (or y? py))
+    (shared.ship-draw self)
+    (tset self.pos :x  px)
+    (tset self.pos :y  py)
+    )
+  (when (not no-outline?)
+    (shared.ship-draw-outline self 80 48))
   )
 
 (fn ship.update [self dt]

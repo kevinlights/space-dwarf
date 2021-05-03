@@ -17,24 +17,26 @@ You are the only biological life-form on the SS Endeavour, which has been floati
                     {:text "Controls" :callback :controls}]
           }
 
-  :controls {:title "Controls"
-             :description "
-  - Move with WSAD.
-  - Pickup and put down items with SPACE.
-  - Delete item in your hands with DELETE.
-  - You can click on any element on screen for details."
-             :buttons []}
-  :credits {:title "Credits"
-            :description"
-Font (FFForwa) - (OFL)
-Font (Inconsolata) - (OFL)
-Sounds Effects -  NeadSimic, Nicole Marie, Jalastram, Blender Foundation, MentalSanityOff (CCBY 3/4)
-Library (Lume) - RXI (MIT/X11)
-Library (anim8,bump) - Enrique Cota (MIT)
-Engine (LÖVE) - LÖVE Dev Team (Zlib)
-Language (Fennel) - Calvin Rose (MIT/X11)
-Web Support (Love.js) Davidobot"
-            :buttons []}
+;;   :controls {:title "Controls"
+;;              :description "
+;;   - Move with WSAD.
+;;   - Pickup and put down items with SPACE.
+;;   - Delete item in your hands with DELETE.
+;;   - You can click on any element on screen for details."
+;;              :disable-nav true
+;;              :buttons {:text "Back" :callback :back-to-start}}
+;;   :credits {:title "Credits"
+;;             :description"
+;; Font (FFForwa) - (OFL)
+;; Font (Inconsolata) - (OFL)
+;; Sounds Effects -  NeadSimic, Nicole Marie, Jalastram, Blender Foundation, MentalSanityOff (CCBY 3/4)
+;; Library (Lume) - RXI (MIT/X11)
+;; Library (anim8,bump) - Enrique Cota (MIT)
+;; Engine (LÖVE) - LÖVE Dev Team (Zlib)
+;; Language (Fennel) - Calvin Rose (MIT/X11)
+;; Web Support (Love.js) Davidobot"
+;;             :disable-nav true
+;;             :buttons {:text "Back" :callback :back-to-start}}
   :FU {:title "Furnace"
        :image :FU
        :description"Working the Furnace is an ancient Dwarven right. Or at least that's what the AI says.

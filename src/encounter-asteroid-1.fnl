@@ -8,7 +8,7 @@
 We are approaching Alpha Z quadrant. We will be there within 6 jumps.
 
 Warning: Keep an eye on the remaining mater (bar to the right). We have been in space for 72679 days and are running low."
-    :buttons [{:text "Boot sequence? I'm a Dwarf!!!" :callback :got-it}]
+    :buttons [{:text "Boot sequence? I'm a Dwarf!!!" :callback :finally-go}]
     :keep-open true}
 
    :notification

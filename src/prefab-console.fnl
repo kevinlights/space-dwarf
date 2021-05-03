@@ -279,20 +279,22 @@
                         colliders ret.pos ))
   ret)
 
-(fn console.draw [self]
+(fn console.draw [self no-background? no-title?]
   (love.graphics.push)
   (love.graphics.scale scale)
-  (love.graphics.draw self.background.image self.background.quad (/ self.pos.x 1) (/  (+ self.pos.y) 1))
+  (when (not no-background?)
+    (love.graphics.draw self.background.image self.background.quad (/ self.pos.x 1) (/  (+ self.pos.y) 1)))
   (love.graphics.pop)
   (love.graphics.push)
 
   ;; (love.graphics.scale (/ 1 scale))
   (love.graphics.translate (mf (* scale self.pos.x)) (mf (* scale self.pos.y)))
-  (draw-title self.current-note.title)
+  (when (not no-title?) (draw-title self.current-note.title))
   (draw-image self.current-note.image)
   (draw-description self.current-note.description)
   (draw-buttons self.current-note.buttons)
-  (draw-free-buttons self.actions)
+  (when (not self.current-note.disable-nav)
+    (draw-free-buttons self.actions))
   (love.graphics.pop)
   )
 
